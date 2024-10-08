@@ -9,7 +9,8 @@ defmodule Kiosk.Application do
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: Kiosk.Worker.start_link(arg)
-      # {Kiosk.Worker, arg}
+      {Bandit, plug: Kiosk.Router, scheme: :http, port: 4000},
+      {Kiosk.Server, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

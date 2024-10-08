@@ -1,18 +1,37 @@
 defmodule Kiosk do
+  import Kiosk.Utils
+
   @moduledoc """
   Documentation for `Kiosk`.
   """
+  def display(params) do
+    {:ok, render_template(:index, context(:index))}
+  end
 
-  @doc """
-  Hello world.
+  defp render_template(template, ctx) do
+    path = "../kiosk/templates/#{template}.html"
+    Path.expand(path, __ENV__.file)
+    |> EEx.eval_file(ctx)
+  end
 
-  ## Examples
+  defp context(template) do
+    [
+      assigns: (
+	context_for_template(template)
+	|> Enum.into(runtime_context())
+      )
+    ]
+  end
 
-      iex> Kiosk.hello()
-      :world
+  defp runtime_context do
+    time = Calendar.strftime(now(), "%x %X")
+    [
+      subheading: "It's #{time}",
+      footer: "Made with 💜 in Elixir"
+    ]
+  end
 
-  """
-  def hello do
-    :world
+  defp context_for_template(template) do
+    Application.get_env(:kiosk, template, [])
   end
 end

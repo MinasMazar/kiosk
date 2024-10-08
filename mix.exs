@@ -23,7 +23,8 @@ defmodule Kiosk.MixProject do
   defp deps do
     [
       {:bandit, "~> 1.0"},
-      {:plug, "~> 1.16.1"}
+      {:plug, "~> 1.16.1"},
+      {:tzdata, "~> 1.1"}
     ]
   end
 end
