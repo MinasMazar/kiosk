@@ -10,8 +10,8 @@ defmodule Kiosk.Browser do
     Systemc.cmd("midori", ~w[-e tab-reload])
   end
 
-  def start_link(args) do
-    GenServer.start_link(__MODULE__, args, name: __MODULE__)
+  def start_link do
+    GenServer.start_link(__MODULE__, nil, name: __MODULE__)
   end
 
   def init(_) do

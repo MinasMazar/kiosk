@@ -24,9 +24,11 @@ defmodule Kiosk do
   end
 
   defp runtime_context do
-    time = Calendar.strftime(now(), "%x %X")
+    time = Calendar.strftime(now(), "%I:%M%p")
+    date = Calendar.strftime(now(), "%x")
     [
-      subheading: "It's #{time}",
+      time: time,
+      date: date,
       footer: "Made with 💜 in Elixir"
     ]
   end

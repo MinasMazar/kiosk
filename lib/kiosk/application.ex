@@ -11,7 +11,7 @@ defmodule Kiosk.Application do
       # Starts a worker by calling: Kiosk.Worker.start_link(arg)
       {Bandit, plug: Kiosk.Router, scheme: :http, port: 4000},
       {Kiosk.Server, []},
-      {Kiosk.Browser, []}
+      %{id: Kiosk.Browser, start: {Kiosk.Browser, :start_link, []}, restart: :temporary}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
