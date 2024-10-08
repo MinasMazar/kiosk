@@ -3,11 +3,11 @@ defmodule Kiosk.Browser do
   use GenServer
 
   def open(url: url) do
-    System.cmd("midori", ~w[-e fullscreen "#{url}"])
+    System.cmd("midori", ~w[-e fullscreen #{url}])
   end
 
   def reload do
-    Systemc.cmd("midori", ~w[-e tab-reload])
+    System.cmd("midori", ~w[-e tab-reload])
   end
 
   def start_link do
@@ -21,14 +21,27 @@ defmodule Kiosk.Browser do
      |> schedule_reload()}
   end
 
+  def state() do
+    GenServer.call(__MODULE__, :state)
+  end
+
+  def alter_state(overrides) do
+    GenServer.cast(__MODULE__, {:state, overrides})
+  end
+
+  def handle_call(:state, _, state), do: {:reply, state, state}
+  def handle_cast({:state, overrides}, state), do: {:noreply, Map.merge(state, overrides)}
+
   def handle_info(:start, state) do
-    port = Port.open({:spawn, open(url: state.url)}, [])
+    IO.puts("Starting browser..")
+    port = Port.open({:spawn, ~s[midori -e fullscreen "#{state.url}"]}, [])
     ref = Port.monitor(port)
-    {:noreply, {port, ref}}
+    {:noreply, Map.put(state, :port, {port, ref})}
   end
 
   def handle_info(:reload, state) do
-    reload() && {:noreply, state}
+    IO.puts("Reloading browser page..")
+    reload() && {:noreply, schedule_reload(state)}
   end
 
   def handle_info({_port, {:data, _message}}, state) do
@@ -40,7 +53,7 @@ defmodule Kiosk.Browser do
   end
 
   defp schedule_start(state) do
-    send(self(), :start) && state
+    Process.send_after(self(), :start, 4_000) && state
   end
 
   defp schedule_reload(state) do
