@@ -6,6 +6,17 @@ defmodule Kiosk.Server do
   end
 
   def init(_) do
-    {:ok, []}
+    {:ok, schedule_next([])}
+  end
+
+  def handle_info(:run, state) do
+    page = Enum.random(~w[kiosk dev])
+    Kiosk.Browser.jump(url: "/#{page}")
+    {:noreply, schedule_next(state)}
+  end
+
+  def schedule_next(state) do
+    Process.send_after(self(), :run, 30_000)
+    state
   end
 end
