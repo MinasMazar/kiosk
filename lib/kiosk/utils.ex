@@ -3,5 +3,5 @@ defmodule Kiosk.Utils do
     with {:ok, time} <- DateTime.now(timezone()), do: time
   end
 
-  defp timezone, do: Application.get_env(:fra_martino, :timezone, "UTC")
+  defp timezone, do: Application.get_env(:kiosk, :timezone, "UTC")
 end
