@@ -22,6 +22,7 @@ defmodule Kiosk.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:banshee, "~> 0.1.0", git: "https://github.com/MinasMazar/banshee.git"},
       {:bandit, "~> 1.0"},
       {:plug, "~> 1.16.1"},
       {:tzdata, "~> 1.1"}
