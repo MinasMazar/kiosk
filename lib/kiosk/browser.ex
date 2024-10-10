@@ -1,5 +1,5 @@
 defmodule Kiosk.Browser do
-  @reload_timeout 12 * 60 * 1000
+  @reload_timeout 20 * 60 * 1000
   use GenServer
 
   def open(url: url) do
@@ -21,10 +21,6 @@ defmodule Kiosk.Browser do
      |> schedule_reload()}
   end
 
-  def jump(url: url) do
-    GenServer.cast(__MODULE__, {:jump,  url})
-  end
-
   def state() do
     GenServer.call(__MODULE__, :state)
   end
@@ -35,10 +31,6 @@ defmodule Kiosk.Browser do
 
   def handle_call(:state, _, state), do: {:reply, state, state}
   def handle_cast({:state, overrides}, state), do: {:noreply, Map.merge(state, overrides)}
-  def handle_cast({:jump, url}, state) do
-    System.cmd("midori", ["jump", url])
-    {:noreply, state}
-  end
 
   def handle_info(:start, state) do
     IO.puts("Starting browser..")

@@ -1,11 +1,28 @@
 defmodule Kiosk do
+  alias Kiosk.{Browser, KV}
+  require Logger
   import Kiosk.Utils
+
+  defdelegate page(), to: KV
+  defdelegate set_page(page), to: KV
+  defdelegate reload(), to: Browser
+
+  def display_page(page \\ page()) do
+    Kiosk.set_page(page)
+    Browser.reload()
+  end
 
   @moduledoc """
   Documentation for `Kiosk`.
   """
-  def display(params) do
-    {:ok, render_template(:index, context(:index))}
+  def display(_params) do
+    page = KV.page()
+    Logger.info("Displaying page #{page}")
+    {:ok, render_template(page, context(page))}
+  end
+
+  defp render_template(template, ctx) when is_binary(template) do
+    String.to_atom(template) |> render_template(ctx)
   end
 
   defp render_template(template, ctx) do

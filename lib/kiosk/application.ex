@@ -10,6 +10,7 @@ defmodule Kiosk.Application do
     children = [
       # Starts a worker by calling: Kiosk.Worker.start_link(arg)
       {Bandit, plug: Kiosk.Router, scheme: :http, port: 4000},
+      {Kiosk.KV, %{}},
       {Kiosk.Server, []},
       %{id: Kiosk.Browser, start: {Kiosk.Browser, :start_link, []}, restart: :temporary}
     ]
